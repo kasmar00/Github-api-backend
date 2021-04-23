@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY = activate debug clean
+.PHONY = run debug clean check install env
 
 run:
 	@( \
@@ -20,6 +20,13 @@ debug:
 clean:
 	@echo "Cleaning .pyc files"
 	@py3clean .
+
+check:
+	@echo "Run tests"
+	@( \
+		source .env/bin/activate; \
+		python test_resources.py;\
+	)
 
 install:
 	@echo "Installing dependencies"
