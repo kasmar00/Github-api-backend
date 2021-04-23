@@ -38,5 +38,5 @@ install:
 env:
 	@echo "Creating venv"
 	@( \
-		python3 -m venv .env
+		python3 -m venv .env \
 	)
