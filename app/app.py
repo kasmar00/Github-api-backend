@@ -3,7 +3,7 @@ from os import environ
 from flask import Flask
 from flask_restful import Api
 
-from resources import Stars, List
+from .resources import Stars, List
 
 app = Flask(__name__)
 api = Api(app)

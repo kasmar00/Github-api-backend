@@ -1,7 +1,7 @@
 import unittest
 import json
 
-import resources
+import app.resources as resources
 
 
 def loadJson():

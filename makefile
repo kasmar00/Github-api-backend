@@ -5,7 +5,7 @@ run:
 	@( \
 		source .env/bin/activate; \
 		export FLASK_ENV=development; \
-		python3 app.py; \
+		python3 wsgi.py; \
 	)
 
 debug:
@@ -14,7 +14,7 @@ debug:
 		source .env/bin/activate; \
 		export FLASK_ENV=development; \
 		export flask_debug=true; \
-		python3 app.py; \
+		python3 wsgi.py; \
 	)
 
 clean:
@@ -25,7 +25,7 @@ check:
 	@echo "Run tests"
 	@( \
 		source .env/bin/activate; \
-		python test_resources.py;\
+		python -m test.test_resources;\
 	)
 
 install:
