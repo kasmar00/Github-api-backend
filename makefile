@@ -25,7 +25,7 @@ check:
 	@echo "Run tests"
 	@( \
 		source .env/bin/activate; \
-		python -m test.test_resources;\
+		python3 -m test.test_resources;\
 	)
 
 install:
