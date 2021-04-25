@@ -10,7 +10,7 @@ An example is deployed to heroku: https://github-backend-api-allegro.herokuapp.c
 
 To run the application you should be using a fairly recent Linux distribution (tested under `Ubuntu 20.04.2` with Linux kernel `5.4.0`) with `python3` and `make` installed.
 
-Running from provided makefile:
+Running from provided makefile (all targets are described in `$ make help`):
 
 1. Create virtual environment: `$ make env`
 2. Install necessary packages: `$ make install`
