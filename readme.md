@@ -27,13 +27,21 @@ If you are running Windows you have to find your own versions of commands locate
 
 If you are using linux, but can't use `make` you should execute the commands located in makefile under targets: `env`, `install`, `run`/`debug`. Keep in mind that after creating virtual environment you should activate it `$ source .env/bin activate` and execute all the following commands from it.
 
+### Authentication
+
+Github api has a limit of 60 requests per hour for not authenticated users and 5000 for authenticated.
+
+Application uses two environment variables to authenticate when using github api: `gh_user` (storing the github username) and `gh_token` (storing the personal access token). Both variables should be exported in shell in which app is being run (for example by calling `$ export gh_user=foo`).
+
+Personal access tokens may be created in User settings -> Developer settings -> Personal access tokens (https://github.com/settings/tokens). It's enough to set access to `public_repo`.
+
 ## Development
 
 Project structure:
 
 - `app/` - app source code
 - `test/` - unit tests, and sample data json (for testing)
-- `.github/` - workflow to run tests on commit and PR to `master` branch
+- `.github/workflows/test.yml` - workflow to run unit tests on commit and PR to `master` branch
 - `wsgi.py` - entry point to application
 - `makefile` - recipes to run app
 - `Procfile` - deployment specs for heroku
@@ -56,7 +64,9 @@ Some tests rely on specific repositories on specific accounts. For example: repo
 
   Example usage:
 
-  `$ wget localhost/list?user=allegro`
+  `$ curl localhost/list?user=allegro`
+
+  or visit https://github-backend-api-allegro.herokuapp.com/list?user=allegro
 
   Result (head):
 
@@ -85,10 +95,21 @@ Some tests rely on specific repositories on specific accounts. For example: repo
 
   Example usage:
 
-  `$ wget localhost/?stars=allegro`
+  `$ curl localhost/?stars=allegro`
+
+  or visit https://github-backend-api-allegro.herokuapp.com/stars?user=allegro
 
   Result:
 
   ```
   6368
   ```
+
+### HTTP response codes
+
+Issuing `get` methods on above routes will return data and proper http response code. Possible response codes are:
+
+- `200` - Everything went ok, data is returned
+- `204` - User was not found (github api returned `404` code), empty data is returned
+- `400` - Bad username was given, application will not process the query
+- `504` - Github api is unavailable to application server. This may be due to github being down or server having no access to internet.
