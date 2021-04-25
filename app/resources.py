@@ -1,6 +1,7 @@
 import json
-import urllib.request
-import typing
+import requests
+from typing import List, Dict, Tuple, AnyStr
+import os
 
 
 from flask_restful import Resource
@@ -18,7 +19,7 @@ class github(Resource):
     """
 
     @staticmethod
-    def getUrl(username: typing.AnyStr) -> typing.List[typing.Dict]:
+    def getUrl(username: AnyStr) -> List[Dict]:
         """
         Downloads data from api
 
@@ -28,18 +29,26 @@ class github(Resource):
         Returns:
             data - list of dictionaries downloaded from github api
         """
-        # if not re.match("^([a-z\d]+-)*[a-z\d]+$", username):
         if "" == username or " " in username or "/" in username:
             raise Exception("Bad username")
         try:
-            with urllib.request.urlopen(f"https://api.github.com/users/{username}/repos") as response:
-                data = json.loads(response.read())
-            return data
-        except:
+            auth = (os.environ.get("gh_user", ""),
+                    os.environ.get("gh_token", ""))
+            req = requests.get(
+                f"https://api.github.com/users/{username}/repos", auth=auth)
+            # print(req.status_code)
+            if req.status_code == 200:
+                data = json.loads(req.content)
+                return data
+            else:
+                raise Exception(f"Error {req.status_code}")
+                # 404 etc are passed here and cached below as user not found, that may require a change
+        except Exception as e:
+            print(e)
             raise Exception("User not found")
 
     @staticmethod
-    def extractData(data: typing.List[typing.Dict]) -> typing.List[typing.Dict]:
+    def extractData(data: List[Dict]) -> List[Dict]:
         """
         Extracts downloaded data
 
@@ -63,7 +72,7 @@ class github(Resource):
         return ret
 
     @staticmethod
-    def handler(e: Exception) -> typing.Tuple[None, int]:
+    def handler(e: Exception) -> Tuple[None, int]:
         """
         Handles exceptions thrown by getUrl method
 
@@ -82,7 +91,7 @@ class github(Resource):
         return None, code
 
 
-class List(github):
+class ListRep(github):
     """
     Class for handling queries for list of repositories
     """
@@ -92,7 +101,8 @@ class List(github):
         Method to handle get requests
 
         Returns:
-            Data (json list of repositories), on exception data provided from exception handler with proper response code
+            Data (json list of repositories), on exception data provided
+            from exception handler with proper response code
         """
         args = request.args
         user = args.get("user")
@@ -109,7 +119,7 @@ class Stars(github):
     """
 
     @staticmethod
-    def starSum(data: typing.List[typing.Dict]) -> int:
+    def starSum(data: List[Dict]) -> int:
         """
         Counts sum of stars in data provided from extractData method
 
@@ -129,7 +139,8 @@ class Stars(github):
         Method to handle get requests
 
         Returns:
-            Data (single int), on exception data provided from exception handler with proper response code
+            Data (single int), on exception data provided
+            from exception handler with proper response code
         """
         args = request.args
         user = args.get("user")
