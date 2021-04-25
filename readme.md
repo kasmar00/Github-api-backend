@@ -1,6 +1,8 @@
 # Github api client (backend)
 
-Server side Github api client.
+Server side Github api client (task number 3) created during recruitment for Allegro Summer e-Xperience.
+
+Author: Marcin Kasznia (https://github.com/kasmar00)
 
 In this file `$` symbolizes that the following code is to be run in Linux (Bourne like) shell (ex. `Bash`,`Zsh`) as normal user. Example: `$ make` symbolizes that the user shall ran the `make` command in main folder of the project.
 
