@@ -35,16 +35,17 @@ class github(Resource):
             auth = (os.environ.get("gh_user", ""),
                     os.environ.get("gh_token", ""))
             req = requests.get(
-                f"https://api.github.com/users/{username}/repos", auth=auth)
+                f"https://api.github.com/users/{username}/repos", auth=auth, timeout=5)
             # print(req.status_code)
             if req.status_code == 200:
                 data = json.loads(req.content)
                 return data
             else:
                 raise Exception(f"Error {req.status_code}")
-                # 404 etc are passed here and cached below as user not found, that may require a change
-        except Exception as e:
-            print(e)
+                # 404 etc are passed here and cached below as user not found
+        except (requests.ConnectionError, requests.Timeout):
+            raise Exception("Connection error")
+        except Exception:
             raise Exception("User not found")
 
     @staticmethod
@@ -83,12 +84,18 @@ class github(Resource):
             None value (as data) and http response code
         """
         print(e)
-        code = 200
+        code = 500
+        msg = "Other internal error"
         if "Bad username" == str(e):
+            msg = "Bad username was given (containing illegal characters etc)"
             code = 400
         elif "User not found" == str(e):
+            msg = "Username was not found by github api"
             code = 204
-        return None, code
+        elif "Connection error" == str(e):
+            msg = "Server can't connect to github api"
+            code = 504
+        return msg, code
 
 
 class ListRep(github):
