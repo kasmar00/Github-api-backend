@@ -4,13 +4,19 @@ Server side Github api client (task number 3) created during recruitment for All
 
 Author: Marcin Kasznia (https://github.com/kasmar00)
 
+An example is deployed to heroku: https://github-backend-api-allegro.herokuapp.com/
+
 In this file `$` symbolizes that the following code is to be run in Linux (Bourne like) shell (ex. `Bash`,`Zsh`) as normal user. Example: `$ make` symbolizes that the user shall ran the `make` command in main folder of the project.
 
 ## Running
 
-An example is deployed to heroku: https://github-backend-api-allegro.herokuapp.com/
-
 To run the application you should be using a fairly recent Linux distribution (tested under `Ubuntu 20.04.2` with Linux kernel `5.4.0`) with `python3` and `make` installed.
+
+If you are running Windows you have to find your own versions of commands located in `makefile`, but the overall steps, described below should be similar.
+
+Instructions to run using docker (from provided `Dockerfile`) are also given below.
+
+### On Linux
 
 Running from provided makefile (all targets are described in `$ make help`):
 
@@ -25,8 +31,6 @@ Running from provided makefile (all targets are described in `$ make help`):
 
 Regardless of run method, application should print server address (ex. `127.0.0.1:5000`). Use it to access the app, as a replacement of `localhost` in examples below.
 
-If you are running Windows you have to find your own versions of commands located in `makefile`, but the overall steps should be similar.
-
 If you are using linux, but can't use `make` you should execute the commands located in makefile under targets: `env`, `install`, `run`/`debug`. Keep in mind that after creating virtual environment you should activate it `$ source .env/bin activate` and execute all the following commands from it.
 
 ### Authentication
@@ -36,6 +40,16 @@ Github api has a limit of 60 requests per hour for not authenticated users and 5
 Application uses two environment variables to authenticate when using github api: `gh_user` (storing the github username) and `gh_token` (storing the personal access token). Both variables should be exported in shell in which app is being run (for example by calling `$ export gh_user=foo`).
 
 Personal access tokens may be created in User settings -> Developer settings -> Personal access tokens (https://github.com/settings/tokens). It's enough to set access to `public_repo`.
+
+### Using Docker
+
+In following commands substitute the `python-docker` with your desired image name.
+
+1. Build the provided `Dockerfile`: `$ docker build --tag python-docker .`
+2. Authentication run
+3. Export the environment variables `gh_user` and `gh_token`
+4. Run the image: `$ docker run --env gh_user --env gh_token --publish 5000:5000 python-docker`
+5. App should start at port `5000` on localhost
 
 ## Development
 
